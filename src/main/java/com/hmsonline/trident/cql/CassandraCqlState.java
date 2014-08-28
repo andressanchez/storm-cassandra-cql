@@ -37,14 +37,14 @@ public class CassandraCqlState implements State {
     @Override
     public void commit(Long txid) {
         LOG.debug("Commiting [{}]", txid);
-        BatchStatement batch = new BatchStatement(Type.LOGGED);
+        BatchStatement batch = new BatchStatement(Type.COUNTER);
         int i = 0;
         for(Statement statement : this.statements) {
             batch.add(statement);
             i++;
             if(i >= this.maxBatchSize) {
                 clientFactory.getSession().execute(batch);
-                batch = new BatchStatement(Type.LOGGED);
+                batch = new BatchStatement(Type.COUNTER);
                 i = 0;
             }
         }
